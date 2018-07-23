@@ -1,0 +1,25 @@
+FROM node
+
+WORKDIR /var/lib
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    git
+
+RUN git clone https://github.com/hypothesis/client.git --branch v1.85.0 hypothesis-client
+
+WORKDIR /var/lib/hypothesis-client
+
+EXPOSE 3001
+
+ENV SIDEBAR_APP_URL http://localhost:5000/app.html
+
+# ENV PATH /var/lib/hypothesis-client/bin:$PATH
+
+RUN npm install -g gulp-cli
+
+RUN npm install gulp-cli
+
+RUN make
+
+ENTRYPOINT ["gulp", "watch"]

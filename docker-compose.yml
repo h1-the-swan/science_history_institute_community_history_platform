@@ -2,7 +2,8 @@ version: '3'
 services:
   hypothesis-h:
     build:
-      context: ./hypothesis-service
+      context: .
+      dockerfile: ./Dockerfile_service
       args:
         DEVELOPMENT: "true" 
     depends_on:
@@ -28,7 +29,8 @@ services:
     network_mode: "host"
   hypothesis-client:
     build:
-      context: ./hypothesis-client
+      context: .
+      dockerfile: ./Dockerfile_client
     ports:
       - '127.0.0.1:3001:3001'
     # volumes:
@@ -57,11 +59,11 @@ services:
     ports:
       - '127.0.0.1:5672:5672'
       - '127.0.0.1:15672:15672'
-  community_history_platform:
-    build:
-      context: ./community_history_platform
-    ports:
-      - '127.0.0.1:5050:5050'
-    network_mode: "host"
-    env_file:
-      - .env
+  # community_history_platform:
+  #   build:
+  #     context: ./community_history_platform
+  #   ports:
+  #     - '127.0.0.1:5050:5050'
+  #   network_mode: "host"
+  #   env_file:
+  #     - .env
