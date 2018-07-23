@@ -59,11 +59,12 @@ services:
     ports:
       - '127.0.0.1:5672:5672'
       - '127.0.0.1:15672:15672'
-  # community_history_platform:
-  #   build:
-  #     context: ./community_history_platform
-  #   ports:
-  #     - '127.0.0.1:5050:5050'
-  #   network_mode: "host"
-  #   env_file:
-  #     - .env
+  community_history_platform:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_app
+    ports:
+      - '127.0.0.1:5050:5050'
+    network_mode: "host"
+    env_file:
+      - .env
