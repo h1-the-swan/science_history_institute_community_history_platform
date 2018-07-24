@@ -12,7 +12,7 @@ WORKDIR /var/lib/hypothesis-client
 
 EXPOSE 3001
 
-ENV SIDEBAR_APP_URL http://localhost:5000/app.html
+# ENV SIDEBAR_APP_URL http://localhost:5000/app.html
 
 # ENV PATH /var/lib/hypothesis-client/bin:$PATH
 
