@@ -2,7 +2,7 @@ FROM node
 
 ARG DEVELOPMENT
 
-ENV NODE_ENV production
+ENV NODE_ENV development
 
 WORKDIR /var/lib
 
@@ -51,14 +51,21 @@ COPY . .
 EXPOSE 5000
 
 ENV CLIENT_OAUTH_ID $HYPOTHESIS_CLIENT_ID
-ENV CLIENT_URL http://localhost:3001/hypothesis
+ENV CLIENT_URL $HYPOTHESIS_CLIENT_URL
 
 # Set the application environment
 ENV PATH /var/lib/hypothesis/bin:$PATH
 ENV PYTHONIOENCODING utf_8
 ENV PYTHONPATH /var/lib/hypothesis:$PYTHONPATH
 
+# Delete lines in `devserver.py` that would otherwise overwrite our environment variable for websocket_url.
+# We provide our own WEBSOCKET_URL in the .env file.
+RUN sed -i '/WEBSOCKET_URL/d' ./h/cli/commands/devserver.py
+
 # Start the web server by default
 RUN npm install -g gulp-cli
 RUN make clean
+
+RUN npm install
+
 ENTRYPOINT ["make", "dev"]

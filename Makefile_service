@@ -27,6 +27,10 @@ clean:
 ## Run the development H server locally
 .PHONY: dev
 dev: build/manifest.json .pydeps
+	# echo "deleting all existing database tables"
+	# @cat clear_h_database.py | bin/hypothesis --dev shell --type=plain
+	# echo "search reindex"
+	# -@bin/hypothesis --dev search reindex
 	@bin/hypothesis --dev init
 	@echo ${ADMIN_USERNAME}
 	@bin/hypothesis --dev user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
