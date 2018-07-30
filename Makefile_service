@@ -21,25 +21,17 @@ build/manifest.json: node_modules/.uptodate
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-	rm -f node_modules/.uptodate .pydeps
+	rm -f node_modules/.uptodate .pydeps .devinit
 	rm -rf build
+
+## Initialize development H servier
+.PHONY: dev-init
+dev-init: .devinit
+
 
 ## Run the development H server locally
 .PHONY: dev
-dev: build/manifest.json .pydeps
-	# echo "deleting all existing database tables"
-	# @cat clear_h_database.py | bin/hypothesis --dev shell --type=plain
-	# echo "search reindex"
-	# -@bin/hypothesis --dev search reindex
-	@bin/hypothesis --dev init
-	@echo ${ADMIN_USERNAME}
-	@bin/hypothesis --dev user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
-	@bin/hypothesis --dev user admin ${ADMIN_USERNAME}
-	# Create admin account for the sciencehistory.org namespace (authority)
-	@bin/hypothesis --dev user add --authority sciencehistory.org --username admin --email admin@localhost --password secret
-	@cat setup_auth_clients.py | bin/hypothesis --dev shell --type=plain
-	# @postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_CLIENT_ID}, 'lsf_client', ${HYPOTHESIS_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'client_credentials', '', '${HYPOTHESIS_SERVICE}/app.html', 't')"
-	# @postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_JWT_CLIENT_ID}, 'lsf_jwt_client', ${HYPOTHESIS_JWT_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'jwt_bearer', '', '', 't')"
+dev: .devinit
 	@bin/hypothesis devserver
 
 ## Build hypothesis/hypothesis docker image
@@ -94,6 +86,22 @@ lint: .pydeps
 node_modules/.uptodate: package.json
 	@echo installing javascript dependencies
 	@node_modules/.bin/check-dependencies 2>/dev/null || npm install
+	@touch $@
+
+.devinit: build/manifest.json .pydeps
+	@# echo "deleting all existing database tables"
+	@# @cat clear_h_database.py | bin/hypothesis --dev shell --type=plain
+	@# echo "search reindex"
+	@# -@bin/hypothesis --dev search reindex
+	@bin/hypothesis --dev init
+	@echo ${ADMIN_USERNAME}
+	@bin/hypothesis --dev user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
+	@bin/hypothesis --dev user admin ${ADMIN_USERNAME}
+	@# Create admin account for the sciencehistory.org namespace (authority)
+	@bin/hypothesis --dev user add --authority sciencehistory.org --username admin --email admin@localhost --password secret
+	cat setup_auth_clients.py | bin/hypothesis --dev shell --type=plain
+	@# postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_CLIENT_ID}, 'lsf_client', ${HYPOTHESIS_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'client_credentials', '', '${HYPOTHESIS_SERVICE}/app.html', 't')"
+	@# postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_JWT_CLIENT_ID}, 'lsf_jwt_client', ${HYPOTHESIS_JWT_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'jwt_bearer', '', '', 't')"
 	@touch $@
 
 # Self documenting Makefile

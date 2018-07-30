@@ -34,6 +34,7 @@ RUN git checkout 50bc0e93b80329d1b98df1fe7c6e79f19d90a5b1
 
 COPY setup_auth_clients.py .
 COPY Makefile_service ./Makefile
+RUN make clean
 
 # Install build deps, build, and then clean up.
 # RUN pip install -r requirements.txt
@@ -64,8 +65,10 @@ RUN sed -i '/WEBSOCKET_URL/d' ./h/cli/commands/devserver.py
 
 # Start the web server by default
 RUN npm install -g gulp-cli
-RUN make clean
 
-RUN npm install
+# RUN npm install
+
+# # initialize the dev server (DOESN'T WORK)
+# RUN make dev-init
 
 ENTRYPOINT ["make", "dev"]
