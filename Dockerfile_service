@@ -1,4 +1,4 @@
-FROM node
+FROM python:3.6
 
 ARG DEVELOPMENT
 
@@ -6,22 +6,25 @@ ENV NODE_ENV development
 
 WORKDIR /var/lib
 
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    libevent-dev \
-    libffi-dev \
-    libfontconfig \
-    libpq-dev \
-    libssl-dev \
-    python-dev \
-    python-setuptools \
-    python-pip \
-    python-virtualenv \
-    curl \
-    openssl \
-    gnupg2
+    nodejs
+    # build-essential \
+    # git \
+    # libevent-dev \
+    # libffi-dev \
+    # libfontconfig \
+    # libpq-dev \
+    # libssl-dev \
+    # python-dev \
+    # python-setuptools \
+    # python-pip \
+    # python-virtualenv \
+    # curl \
+    # openssl \
+    # gnupg2
 
 RUN pip install --upgrade pip setuptools
 
@@ -66,9 +69,9 @@ RUN sed -i '/WEBSOCKET_URL/d' ./h/cli/commands/devserver.py
 # Start the web server by default
 RUN npm install -g gulp-cli
 
-# RUN npm install
+RUN npm install
 
 # # initialize the dev server (DOESN'T WORK)
 # RUN make dev-init
 
-ENTRYPOINT ["make", "--debug=v", "dev"]
+ENTRYPOINT ["make", "--debug=b", "dev"]
