@@ -25,8 +25,8 @@ clean:
 	rm -rf build
 
 ## Initialize development H servier
-.PHONY: dev-init
-dev-init: .devinit
+# .PHONY: dev-init
+# dev-init: .devinit
 
 
 ## Run the development H server locally
@@ -88,7 +88,7 @@ node_modules/.uptodate: package.json
 	@node_modules/.bin/check-dependencies 2>/dev/null || npm install
 	@touch $@
 
-.devinit: build/manifest.json .pydeps
+.devinit: node_modules/.uptodate .pydeps
 	@# echo "deleting all existing database tables"
 	@# @cat clear_h_database.py | bin/hypothesis --dev shell --type=plain
 	@# echo "search reindex"

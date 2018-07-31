@@ -71,4 +71,4 @@ RUN npm install -g gulp-cli
 # # initialize the dev server (DOESN'T WORK)
 # RUN make dev-init
 
-ENTRYPOINT ["make", "dev"]
+ENTRYPOINT ["make", "--debug=v", "dev"]

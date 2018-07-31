@@ -54,12 +54,24 @@ services:
       - '127.0.0.1:9201:9200'
     environment:
       - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - elasticsearchdata:/usr/share/elasticsearch/data
   elasticsearchold:
     image: nickstenning/elasticsearch-icu
     ports:
       - '127.0.0.1:9200:9200'
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - elasticsearcholddata:/usr/share/elasticsearch/data
   rabbit:
