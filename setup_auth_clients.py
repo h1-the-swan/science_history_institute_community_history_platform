@@ -36,7 +36,7 @@ request.tm.commit()
 service = request.find_service(name='group')
 org = session.query(models.Organization).filter_by(authority="sciencehistory.org").first()
 group = service.create_open_group(name="ScienceHistory", userid="acct:admin@sciencehistory.org",
-          origins=[os.environ.get('APP_URL')], description=None,
+          origins=[os.environ.get('FRONT_APP_URL')], description=None,
           organization=org)
 request.db.add(group)
 request.db.flush()

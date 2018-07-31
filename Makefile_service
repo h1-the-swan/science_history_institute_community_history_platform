@@ -13,8 +13,9 @@ GULP := node_modules/.bin/gulp
 .PHONY: default
 default: test
 
-build/manifest.json: node_modules/.uptodate
-	$(GULP) build
+# build/manifest.json: node_modules/.uptodate
+# 	$(GULP) build
+# 	touch .gulp_built
 
 ## Clean up runtime artifacts (needed after a version update)
 .PHONY: clean
@@ -88,7 +89,11 @@ node_modules/.uptodate: package.json
 	@node_modules/.bin/check-dependencies 2>/dev/null || npm install
 	@touch $@
 
-.devinit: node_modules/.uptodate .pydeps
+.gulp_built: node_modules/.uptodate
+	$(GULP) build
+	@touch $@
+
+.devinit: .gulp_built .pydeps
 	@# echo "deleting all existing database tables"
 	@# @cat clear_h_database.py | bin/hypothesis --dev shell --type=plain
 	@# echo "search reindex"

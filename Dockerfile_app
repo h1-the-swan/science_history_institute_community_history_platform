@@ -9,7 +9,6 @@ RUN pip install -r requirements.txt
 
 COPY ./community_history_platform/flask .
 COPY ./.env .
-COPY ./js-hypothesis-config.js ./app/static/js-hypothesis-config.js
 
 # Expose the default port.
 EXPOSE 5050
