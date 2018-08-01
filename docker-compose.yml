@@ -54,6 +54,8 @@ services:
       - '127.0.0.1:9201:9200'
     environment:
       - discovery.type=single-node
+      # # ??? Details: https://github.com/elastic/elasticsearch/pull/17288
+      # - discovery.zen.minimum_master_nodes=1
       - bootstrap.memory_lock=true
     ulimits:
       memlock:
