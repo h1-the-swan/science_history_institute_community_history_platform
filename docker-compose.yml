@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./Dockerfile_service
       args:
-        DEVELOPMENT: "true" 
+        DEVELOPMENT: "false" 
     depends_on:
       - postgres
       - elasticsearch
@@ -26,6 +26,7 @@ services:
       - PIP_REQUIRE_VIRTUALENV=0
       - CLIENT_URL=$HYPOTHESIS_CLIENT_URL
       - CLIENT_OAUTH_ID=$HYPOTHESIS_CLIENT_ID
+      - APP_URL=$HYPOTHESIS_SERVICE
     env_file:
       - .env
     network_mode: "host"
@@ -81,17 +82,17 @@ services:
     ports:
       - '127.0.0.1:5672:5672'
       - '127.0.0.1:15672:15672'
-  community_history_platform:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_app
-    ports:
-      - '127.0.0.1:5050:5050'
-    network_mode: "host"
-    env_file:
-      - .env
-    volumes:
-      - ./community_history_platform/flask/app:/var/lib/community_history_platform/app
+  # community_history_platform:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile_app
+  #   ports:
+  #     - '127.0.0.1:5050:5050'
+  #   network_mode: "host"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./community_history_platform/flask/app:/var/lib/community_history_platform/app
   # nginx:
   #   image: nginx:alpine
   #   ports:
