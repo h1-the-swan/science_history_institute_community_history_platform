@@ -99,11 +99,11 @@ node_modules/.uptodate: package.json
 	@echo ${ADMIN_USERNAME}
 	@# bin/hypothesis --dev user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
 	@# bin/hypothesis --dev user admin ${ADMIN_USERNAME}
-	@bin/hypothesis user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
-	@bin/hypothesis user admin ${ADMIN_USERNAME}
+	-@bin/hypothesis user add --username ${ADMIN_USERNAME} --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} --authority localhost
+	-@bin/hypothesis user admin ${ADMIN_USERNAME}
 	@# Create admin account for the sciencehistory.org namespace (authority)
 	@# bin/hypothesis --dev user add --authority sciencehistory.org --username admin --email admin@localhost --password secret
-	@bin/hypothesis user add --authority sciencehistory.org --username admin --email admin@localhost --password secret
+	-@bin/hypothesis user add --authority sciencehistory.org --username admin --email admin@localhost --password secret
 	cat setup_auth_clients.py | bin/hypothesis shell --type=plain
 	@# postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_CLIENT_ID}, 'lsf_client', ${HYPOTHESIS_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'client_credentials', '', '${HYPOTHESIS_SERVICE}/app.html', 't')"
 	@# postgres psql -U postgres -c "INSERT INTO public.authclient ($(date +'%F %T'), $(date +'%F %T'), ${HYPOTHESIS_JWT_CLIENT_ID}, 'lsf_jwt_client', ${HYPOTHESIS_JWT_CLIENT_SECRET}, ${HYPOTHESIS_AUTHORITY}, 'jwt_bearer', '', '', 't')"
