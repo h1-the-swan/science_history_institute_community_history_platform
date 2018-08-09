@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 
 COPY ./community_history_platform/flask .
 COPY ./.env .
+COPY Makefile_app ./Makefile
 
 # Expose the default port.
 EXPOSE 5050
@@ -21,7 +22,8 @@ ENV PYTHONPATH /var/lib/community_history_platform:$PYTHONPATH
 # Create a symlink from .env to config.env, because the app looks for config.env
 RUN ln -s .env config.env
 
-RUN python manage.py recreate_db
-RUN python manage.py setup_dev
+# RUN python manage.py recreate_db
+# RUN python manage.py setup_dev
 
-ENTRYPOINT ["honcho", "start", "-f", "Local", "-e", ".env"]
+# ENTRYPOINT ["honcho", "start", "-f", "Local", "-e", ".env"]
+ENTRYPOINT ["make", "dev"]

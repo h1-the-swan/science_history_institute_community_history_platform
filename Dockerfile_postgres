@@ -1,0 +1,3 @@
+FROM postgres:9.4-alpine
+
+RUN echo "CREATE DATABASE chp;" > /docker-entrypoint-initdb.d/create_chp.sql
