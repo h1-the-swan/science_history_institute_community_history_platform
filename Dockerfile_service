@@ -50,7 +50,7 @@ RUN if [ "$DEVELOPMENT" = "true" ]; then pip install -r requirements-dev.in ; el
 # COPY conf/collectd.conf /etc/collectd/collectd.conf
 # RUN mkdir /etc/collectd/collectd.conf.d
 
-COPY . .
+# COPY . .
 
 # Expose the default port.
 EXPOSE 5000

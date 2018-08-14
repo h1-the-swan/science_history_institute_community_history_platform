@@ -52,7 +52,7 @@ services:
       - '127.0.0.1:5432:5432'
     volumes:
       - postgresdata:/var/lib/postgresql/data
-      - database_snapshots:/database_snapshots
+      - ./database_snapshots:/database_snapshots
   elasticsearch:
     image: hypothesis/elasticsearch:latest
     ports:
@@ -86,19 +86,19 @@ services:
     ports:
       - '127.0.0.1:5672:5672'
       - '127.0.0.1:15672:15672'
-  community_history_platform:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_app
-    ports:
-      - '127.0.0.1:5050:5050'
-    network_mode: "host"
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-    volumes:
-      - ./community_history_platform/flask/app:/var/lib/community_history_platform/app
+  # community_history_platform:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile_app
+  #   ports:
+  #     - '127.0.0.1:5050:5050'
+  #   network_mode: "host"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./community_history_platform/flask/app:/var/lib/community_history_platform/app
   # nginx:
   #   image: nginx:alpine
   #   ports:
@@ -111,4 +111,4 @@ volumes:
     elasticsearchdata:
     elasticsearcholddata:
     postgresdata:
-    database_snapshots:
+    # database_snapshots:
