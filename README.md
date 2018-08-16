@@ -17,19 +17,19 @@ This will build the images, and then run all of the services concurrently in Doc
 
 ### Useful commands
 
-To restore from file-system level backup:
+#### To restore from file-system level backup:
 
 Create backup (example):
 `sudo docker run --rm --volumes-from science_history_institute_community_history_platform_postgres_1 -v $(pwd)/database_snapshots:/backup busybox tar cfz /backup/backup_postgresdata_01_20180814.tar /var/lib/postgresql/data`
 
 Restore from backup (example):
 `sudo docker stop science_history_institute_community_history_platform_postgres_1`
-`sudo docker run --rm --volumes-from science_history_institute_community_history_platform_postgres_1 -v $(pwd)/database_snapshots:/backup busybox tar xfz /backup/backup_postgresdata_02_20180814.tar --overwrite`
+`sudo docker run --rm --volumes-from science_history_institute_community_history_platform_postgres_1 -v $(pwd)/database_snapshots:/backup busybox tar xfz /backup/backup_postgresdata_01_20180814.tar --overwrite`
 `sudo docker start science_history_institute_community_history_platform_postgres_1`
 (This will cause a SQLalchemy OperationalError when you try to use the web app, but reload and it should work).
 
 
-To restore from SQL dump:
+#### To restore from SQL dump:
 
 Create backup (example):
 Backup `postgres` database:
