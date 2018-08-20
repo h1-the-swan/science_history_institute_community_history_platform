@@ -1,4 +1,3 @@
-[submodule "community_history_platform"]
-	path = community_history_platform
-	url = git@bitbucket.org:jporteno/science_history_institute.git
-	branch = app_slim
+[submodule "science_history_institute_chp_app"]
+	path = science_history_institute_chp_app
+	url = git@bitbucket.org:jporteno/science_history_institute_chp_app.git

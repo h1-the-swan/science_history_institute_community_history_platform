@@ -98,7 +98,7 @@ services:
   #   depends_on:
   #     - postgres
   #   volumes:
-  #     - ./community_history_platform/flask/app:/var/lib/community_history_platform/app
+  #     - ./science_history_institute_chp_app/app:/var/lib/community_history_platform/app
   # nginx:
   #   image: nginx:alpine
   #   ports:

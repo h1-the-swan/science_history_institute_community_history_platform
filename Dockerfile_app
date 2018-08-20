@@ -2,12 +2,12 @@ FROM python:3.6
 
 WORKDIR /var/lib/community_history_platform
 
-COPY ./community_history_platform/requirements.txt ./
+COPY ./science_history_institute_chp_app/requirements.txt ./
 
 # Install build deps, build, and then clean up.
 RUN pip install -r requirements.txt
 
-COPY ./community_history_platform/flask .
+COPY ./science_history_institute_chp_app .
 COPY ./.env .
 COPY Makefile_app ./Makefile
 
