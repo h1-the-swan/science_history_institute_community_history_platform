@@ -41,3 +41,5 @@ Restore from backup (example):
 (With all containers running)
 `sudo docker-compose exec postgres psql -f /database_snapshots/testdump_01_postgres_clean.sql -U postgres --dbname=postgres`
 `sudo docker-compose exec postgres psql -f /database_snapshots/testdump_01_chp_clean.sql -U postgres --dbname=chp`
+May need to also run:
+`sudo docker-compose exec hypothesis-h /var/lib/hypothesis/bin/hypothesis search reindex`

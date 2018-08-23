@@ -1,3 +1,4 @@
 *.env
 tmpbckup/
 database_snapshots/
+__pycache__/
