@@ -15,6 +15,32 @@ After that, run:
 
 This will build the images, and then run all of the services concurrently in Docker containers.
 
+### To install on AWS EC2 instance:
+- Launch instance (t2.medium Ubuntu instance; 4GiB RAM, 8GiB storage)
+  - In Step 6: Configure Security Group, add a rule for HTTP (allow incoming HTTP requests on port 80)
+	- You will need to either generate SSH keys or use an existing key pair to access the server via SSH
+- Now that the EC2 instance is running, copy the Public DNS address (e.g., `ec2-34-212-224-177.us-west-2.compute.amazonaws.com`). This will be referred to as `<PUBLIC-DNS>` below.
+- Zip up the contents of this directory. Make sure before you do this that all files are there, including the git submodule containing the frontend app (`science_history_institute_chp_app/`) and any database snapshots (in `database_snapshots/`)
+  - `cd ..`
+	- `tar -cvzf science_history_institute_community_history_platform.tgz science_history_institute_community_history_platform`
+= Transfer the code to the EC2 instance
+  - `scp -i <SSH-PRIVATE-KEY> science_history_institute_community_history_platform.tgz ubuntu@<PUBLIC-DNS>:/home/ubuntu`
+- Log into the EC2 instance and unzip the files:
+  - `ssh -i <SSH-PRIVATE-KEY> ubuntu@<PUBLIC-DNS>`
+	- `tar -xvzf science_history_institute_community_history_platform.tgz`
+	- `cd science_history_institute_community_history_platform`
+- Install docker-ce and docker-compose on the EC2 instance:
+	- `source install-docker.sh`
+- Modify some important environment variables:
+  - `cd ~/science_history_institute_community_history_platform/`
+	- `python3 modify_envfile.py --ec2`
+- Run Docker Compose to start all of the components:
+  - `sudo docker-compose build && sudo docker-compose up`
+- Restore a database snapshot:
+	- Press CTRL-Z, then run the command `bg` to move the process to the background
+  - `source load_database_snapshot.sh`
+	  - (see the comments in `load_database_snapshot.sh` to understand what it does)
+
 ### Useful commands
 
 #### To restore from file-system level backup:
