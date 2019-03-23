@@ -10,7 +10,7 @@ SNAPSHOT_DIR=`ls -dr database_snapshots/*/ | head -n 1`
 POSTGRES_FILE=`ls $SNAPSHOT_DIR/pgdump_postgres_clean_*.sql | head -n 1`
 CHP_FILE=`ls $SNAPSHOT_DIR/pgdump_chp_clean_*.sql | head -n 1`
 # This modifies the database snapshot contents for use on this EC2 instance
-$PYTHON_CMD modify_postgres_sql.py $POSTGRES_FILE --ec2
+$PYTHON_CMD modify_postgres_sql.py $POSTGRES_FILE -o $POSTGRES_FILE --ec2
 
 # This restores the snapshot for the backend database
 sudo docker-compose exec postgres psql -f $POSTGRES_FILE -U postgres --dbname=postgres

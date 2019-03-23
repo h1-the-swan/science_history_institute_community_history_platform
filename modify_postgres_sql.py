@@ -51,11 +51,11 @@ def main(args):
     if not outfname:
         outfname = get_outfname(fname)
     logger.debug("writing to file: {}...".format(outfname))
-    outf = open(outfname, 'w')
     netloc = args.netloc
     if (not netloc) and (args.ec2 is True):
         netloc = get_ec2_addr()
     scheme = "https" if args.ssl is True else "http"
+    out_lines = []
     with open(fname, 'r') as f:
         groupscope_flag = False
         for line in f:
@@ -63,20 +63,25 @@ def main(args):
             if groupscope_flag is True:
                 # alter this line and reset the flag
                 line = re.sub(REPLACEMENT_GROUPSCOPE[0], REPLACEMENT_GROUPSCOPE[1].format(scheme=scheme, netloc=netloc), line)
-                outf.write(line)
+                # outf.write(line)
+                out_lines.append(line)
                 groupscope_flag = False
                 continue
             if PATTERN_GROUPSCOPE.search(line):
                 # found the "COPY public.groupscope" line, act on it in next loop iteration
-                outf.write(line)
+                # outf.write(line)
+                out_lines.append(line)
                 groupscope_flag = True
                 continue
             for p, r in REPLACEMENT_RULES:
                 # do this for every line but the above cases
                 # this will do nothing to the line if none of the patterns match
                 line = re.sub(p, r.format(scheme=scheme, netloc=netloc), line)
-            outf.write(line)
-    outf.close()
+            # outf.write(line)
+            out_lines.append(line)
+    with open(outfname, 'w') as outf:
+        for out_line in out_lines:
+            outf.write(out_line)
 
 if __name__ == "__main__":
     total_start = timer()

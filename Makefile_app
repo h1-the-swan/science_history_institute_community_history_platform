@@ -3,6 +3,6 @@ dev: .devinit
 	honcho start -f Local -e .env
 
 .devinit:
-	python manage.py recreate_db || sleep 10 && python manage.py recreate_db
+	python manage.py recreate_db_if_not_exists || sleep 10 && python manage.py recreate_db_if_not_exists
 	python manage.py setup_dev
 	@touch $@

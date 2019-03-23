@@ -43,6 +43,9 @@ This will build the images, and then run all of the services concurrently in Doc
 
 ### Useful commands
 
+#### To push new changes to AWS:
+`./push_app_changes.sh -i <SSH-PRIVATE-KEY> -r <PUBLIC-DNS>`
+
 #### To restore from file-system level backup:
 
 Create backup (example):
