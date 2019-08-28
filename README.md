@@ -1,5 +1,16 @@
 # Science History Institute Community History Platform
 
+The Science History Institute (formerly Chemical Heritage Foundation) merged with the Life Sciences Foundation. In the process, they acquired a collection of oral histories (interviews) of key players in the development of the biotech industry in the Bay Area. The collaboration between the Science History Institute and the UW Datalab in the summer of 2018 was an effort to use these oral histories as the basis for a project to facilitate the collaborative construction of the history of biotech by the community itself. Specifically, what came out of this effort was a prototype for a Community History Platform---an online platform which allows users (i.e., members of the community of people who worked in or were somehow involved in the biotech industry as it emerged) to register an account and annotate the oral histories. This could be expanded to include other texts or artifacts (pictures, documents, etc.) in addition to the oral histories. The annotation functionality is meant to serve as a way for the community to discuss and thereby create the history---a history that is living and multifaceted.
+
+The frontend app is a Python Flask app that allows users to register an account, browse the oral history texts, and leave annotations on segments of the oral histories. Users can also reply to others’ annotations. This app lives in a separate repository: <https://github.com/h1-the-swan/science_history_institute_chp_app>, which is a submodule of this repository.
+
+The backend setup uses the Hypothesis annotation service to allow annotations on the oral histories.
+
+The Hypothesis Project (https://web.hypothes.is) is a non-profit organization that, among other things, creates open-source software to facilitate collective annotations of web content. Behind the Community History Platform runs a custom instance of the Hypothesis software that allows users of the app to create annotations on the oral histories using their CHP accounts.
+
+To make this system easy to deploy on a server, all of the components run side-by-side in Docker containers. Docker is a platform that allows contained software services to be run on any systems. The services that run for the CHP are the Hypothesis service, the Hypothesis client, several additional backend services (Elasticsearch, PostgreSQL, RabbitMQ, Nginx) and the frontend app. These services are all integrated using Docker Compose, a tool which orchestrates multiple Docker containers to work together as one application.
+
+
 ### Installation on an AWS EC2 instance:
 
 Follow these instructions to deploy the Community History Platform on an AWS EC2 instance. The instructions must be followed in order.
@@ -36,7 +47,7 @@ Follow these instructions to deploy the Community History Platform on an AWS EC2
 Use `backup_postgres.sh`
 
 ### Environment variables
-You need to manually add a `.env` file not included in this repo. Here is an example `.env` file:
+You need to manually add a `.env` file not included in this repo (in step 4 of the installation instructions above). Here is an example `.env` file:
 
 ```
 PYTHONUNBUFFERED=0
@@ -61,8 +72,6 @@ ELASTICSEARCH_URL=http://localhost:9201
 DATABASE_URL=postgresql://postgres@localhost/postgres
 BROKER_URL=amqp://guest:guest@localhost:5672//
 DEV_DATABASE_URL=postgresql://postgres@localhost/chp
-AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY>
-AWS_SECRET_ACCESS_KEY=<AWS_SECRET>
 ```
 
 
