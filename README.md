@@ -1,74 +1,68 @@
-Packaging Science History Institute Community History Platform using Docker.
+# Science History Institute Community History Platform
 
-Relies on the Hypothesis service, and the Hypothesis client.
+### Installation on an AWS EC2 instance:
 
-Packaged using Docker Compose.
+Follow these instructions to deploy the Community History Platform on an AWS EC2 instance. The instructions must be followed in order.
 
-Uses the Community Science Platform as a submodule.
-Use `git submodule init` and `git submodule update`
-
-Need to import oral histories into `community_history_platform/flask/app/static/LSF_oral_histories/`
-
-After that, run:
-`sudo docker-compose build`
-`sudo docker-compose up`
-
-This will build the images, and then run all of the services concurrently in Docker containers.
-
-### To install on AWS EC2 instance:
-- Launch instance (t2.medium Ubuntu instance; 4GiB RAM, 8GiB storage)
-  - In Step 6: Configure Security Group, add a rule for HTTP (allow incoming HTTP requests on port 80)
-	- You will need to either generate SSH keys or use an existing key pair to access the server via SSH
-- Now that the EC2 instance is running, copy the Public DNS address (e.g., `ec2-34-212-224-177.us-west-2.compute.amazonaws.com`). This will be referred to as `<PUBLIC-DNS>` below.
-- Zip up the contents of this directory. Make sure before you do this that all files are there, including the git submodule containing the frontend app (`science_history_institute_chp_app/`) and any database snapshots (in `database_snapshots/`)
-  - `cd ..`
-	- `tar -cvzf science_history_institute_community_history_platform.tgz science_history_institute_community_history_platform`
-= Transfer the code to the EC2 instance
-  - `scp -i <SSH-PRIVATE-KEY> science_history_institute_community_history_platform.tgz ubuntu@<PUBLIC-DNS>:/home/ubuntu`
-- Log into the EC2 instance and unzip the files:
+1. Launch an AWS instance: Ubuntu Server, t2.medium; 4GiB RAM, 8GiB EBS storage
+  - In step 6: Configure Security Group, add a rule for HTTP (allow incoming HTTP requests on port 80)
+  - You will need to either generate SSH keys or use an existing key pair to access the server via SSH
+  - Once the instance is running, copy the Public DNS address (e.g., `ec2-##-###-###-###.us-west-2.compute.amazonaws.com`). This will be referred to as `<PUBLIC-DNS>` below.
+2. SSH into the EC2 instance:
   - `ssh -i <SSH-PRIVATE-KEY> ubuntu@<PUBLIC-DNS>`
-	- `tar -xvzf science_history_institute_community_history_platform.tgz`
-	- `cd science_history_institute_community_history_platform`
-- Install docker-ce and docker-compose on the EC2 instance:
-	- `source install-docker.sh`
-- Modify some important environment variables:
-  - `cd ~/science_history_institute_community_history_platform/`
-	- `python3 modify_envfile.py --ec2`
-- Run Docker Compose to start all of the components:
+3. Once on the EC2 instance, clone this repository, then initialize and update the submodule:
+  - `git clone https://github.com/h1-the-swan/science_history_institute_community_history_platform.git`
+  - `cd science_history_institute_community_history_platform`
+  - `git submodule init && git submodule update`
+4. There are some files that are not included in the repository and need to be added manually. These include the `.env` file with environment variables, and the Oral Histories Word documents.
+  - Put the `.env` file in the project directory (`~/science_history_institute_community_history_platform/`). See below for the environment variables that must be set.
+  - Put the Oral Histories word documents in `~/science_history_institute_community_history_platform/science_history_institute_chp_app/app/static/LSF_oral_histories/`
+5. Install Docker-CE and docker-compose by running:
+  - `cd ~/science_history_institute_community_history_platform`
+  - `source install-docker.sh`
+6. Run a script that modifies some environment variables:
+  - `cd ~/science_history_institute_community_history_platform`
+  - `python3 modify_envfile.py --ec2`
+7. Run Docker Compose to start all of the components:
   - `sudo docker-compose build && sudo docker-compose up`
-- Restore a database snapshot:
-	- Press CTRL-Z, then run the command `bg` to move the process to the background
-  - `source load_database_snapshot.sh`
-	  - (see the comments in `load_database_snapshot.sh` to understand what it does)
+8. The platform is now running and can be accessed via a web browser at `http://<PUBLIC-DNS>/chp`. Register an account and log in to use it.
 
-### Useful commands
+#### To restore a database snapshot
+1. If docker-compose is running in the foreground, Press CTRL-Z, then run the command `bg` to move the process to the background
+2. `source load_database_snapshot.sh`
+  - (see the comments in `load_database_snapshot.sh` to understand what it does)
+  
+#### To create a database snapshot
+Use `backup_postgres.sh`
 
-#### To push new changes to AWS:
-`./push_app_changes.sh -i <SSH-PRIVATE-KEY> -r <PUBLIC-DNS>`
+### Environment variables
+You need to manually add a `.env` file not included in this repo. Here is an example `.env` file:
 
-#### To restore from file-system level backup:
+```
+PYTHONUNBUFFERED=0
+FLASK_ENV=development
+APP_NAME="Science History Institute Community History"
+FRONT_APP_URL=http://localhost:5050
+ADMIN_USERNAME=lsf_dev
+ADMIN_EMAIL=<EMAIL>
+ADMIN_PASSWORD=<PASSWORD>
+HYPOTHESIS_SERVICE=http://localhost:5000
+HYPOTHESIS_AUTHORITY=sciencehistory.org
+HYPOTHESIS_CLIENT_ID=<CLIENT_ID>
+HYPOTHESIS_CLIENT_SECRET=<CLIENT_SECRET>
+HYPOTHESIS_JWT_CLIENT_ID=<JWT_CLIENT_ID>
+HYPOTHESIS_JWT_CLIENT_SECRET=<JWT_CLIENT_SECRET>
+SIDEBAR_APP_URL=http://localhost:5000/app.html
+HYPOTHESIS_CLIENT_URL=http://localhost:3001/hypothesis
+WEBSOCKET_URL=ws://localhost:5001/ws
+SECRET_KEY=<SECRET_KEY>
+ELASTICSEARCH_HOST=http://localhost:9200
+ELASTICSEARCH_URL=http://localhost:9201
+DATABASE_URL=postgresql://postgres@localhost/postgres
+BROKER_URL=amqp://guest:guest@localhost:5672//
+DEV_DATABASE_URL=postgresql://postgres@localhost/chp
+AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY>
+AWS_SECRET_ACCESS_KEY=<AWS_SECRET>
+```
 
-Create backup (example):
-`sudo docker run --rm --volumes-from science_history_institute_community_history_platform_postgres_1 -v $(pwd)/database_snapshots:/backup busybox tar cfz /backup/backup_postgresdata_01_20180814.tar /var/lib/postgresql/data`
 
-Restore from backup (example):
-`sudo docker stop science_history_institute_community_history_platform_postgres_1`
-`sudo docker run --rm --volumes-from science_history_institute_community_history_platform_postgres_1 -v $(pwd)/database_snapshots:/backup busybox tar xfz /backup/backup_postgresdata_01_20180814.tar --overwrite`
-`sudo docker start science_history_institute_community_history_platform_postgres_1`
-(This will cause a SQLalchemy OperationalError when you try to use the web app, but reload and it should work).
-
-
-#### To restore from SQL dump:
-
-Create backup (example):
-Backup `postgres` database:
-`sudo docker-compose exec postgres pg_dump postgres --clean -U postgres > database_snapshots/testdump_01_postgres_clean.sql`
-Backup chp database:
-`sudo docker-compose exec postgres pg_dump chp --clean -U postgres > database_snapshots/testdump_01_chp_clean.sql`
-
-Restore from backup (example):
-(With all containers running)
-`sudo docker-compose exec postgres psql -f /database_snapshots/testdump_01_postgres_clean.sql -U postgres --dbname=postgres`
-`sudo docker-compose exec postgres psql -f /database_snapshots/testdump_01_chp_clean.sql -U postgres --dbname=chp`
-May need to also run:
-`sudo docker-compose exec hypothesis-h /var/lib/hypothesis/bin/hypothesis search reindex`
